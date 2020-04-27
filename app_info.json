@@ -1,0 +1,7 @@
+{
+	"title": "Create foreground annotations",
+	"description": "Convert RGBA images to foreground  objects",
+	"type": "application",
+	"version": "1",
+	"docker_image": "docker.deepsystems.io/supervisely/five/python-runner:demo_app"
+}
