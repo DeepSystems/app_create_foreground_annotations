@@ -15,7 +15,10 @@ parser.add_argument('--fg-alpha-threshold', action="store", type=sly.color.valid
                          "keep all pixels with transparency great or equal (>=)")
 
 parser.add_argument('--min-area-percent', action="store", type=sly._utils.validate_percent, default=5,
-                    help="remove all objects with small area (%)")
+                    help="object will be removed if area is less than argument value (%)")
+
+parser.add_argument('--num-objects-per-image', action="store", type=int, default=1,
+                    help="how many objects will be extracted from image (with maximum area)")
 
 parser.add_argument('--cache-dir', action="store", type=str, default="/sly_task_data/cache", required=False)
 parser.add_argument('--vis-dir', action="store", type=str, default="/sly_task_data/vis", required=False)
@@ -62,19 +65,32 @@ def extract_foreground():
         vis = skimage.color.label2rgb(cleaned_mask, bg_label=0)
         sly.image.write(os.path.join(args.vis_dir, '003_components_cleared.png'), vis * 255)
 
+    final_mask, num_cc = skimage.measure.label(cleaned_mask, background=0, return_num=True)
+    if args.debug_vis:
+        vis = skimage.color.label2rgb(final_mask, bg_label=0)
+        sly.image.write(os.path.join(args.vis_dir, '004_final_mask.png'), vis * 255)
 
+    _total_sum = 0
+    cc_area = []
+    for i in range(num_cc + 1):
+        area = np.count_nonzero(final_mask == i)
+        cc_area.append((i, area))
+        _total_sum += area
 
-    # total_sum = 0
-    # for i in range(num + 1):
-    #     comp_mask = (labeled_image == i).astype(np.uint8)
-    #     cv2.imwrite(os.path.join(args.vis_dir, "comp_{}.png".format(i)),  comp_mask * 255)
-    #     total_sum += comp_mask.sum()
-    #     print(comp_mask.sum())
-    #
-    # sly.logger.info("SCRIPT EXECUTED")
-    # print('total_sum = ', total_sum, '; total pixels = ', alpha.shape[0] * alpha.shape[1])
+    image_pixels_count = mask.shape[0] * mask.shape[1]
+    if _total_sum != image_pixels_count:
+        raise RuntimeError("Some pixels are missed. Processed {} of {}".format(_total_sum, image_pixels_count))
 
+    cc_area = sorted(cc_area, key=lambda tup: tup[1])
+    cc_area = cc_area[:args.num_objects_per_image]
 
+    # create masks in supervisely format
+    sly.logger.info("Number of extracted objects: {}".format(len(cc_area)))
+    for idx, (cc_color, area) in enumerate(cc_area):
+        object_mask = (final_mask == cc_color).astype(np.uint8) * 255
+        sly.image.write(os.path.join(args.vis_dir, '005_object_{}.png'.format(idx)), object_mask)
+
+    sly.logger.info("SCRIPT EXECUTED")
 
 
 if __name__ == "__main__":
