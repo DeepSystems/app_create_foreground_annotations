@@ -105,7 +105,7 @@ def extract_foreground():
         render = np.zeros(ann.img_size + (3,), dtype=np.uint8)
         ann.draw(render)
         sly.image.write(os.path.join(args.vis_dir, '006_sly_ann_vis.png'), render)
-
+    #TODO: ann method for visualizing instances to annotation
 
     sly.logger.info("SCRIPT EXECUTED")
 
