@@ -84,11 +84,28 @@ def extract_foreground():
     cc_area = sorted(cc_area, key=lambda tup: tup[1])
     cc_area = cc_area[:args.num_objects_per_image]
 
+    #TODO: count background value
+
     # create masks in supervisely format
+    fg_class = sly.ObjClass("fg", sly.Bitmap, color=[0, 255, 0])
+    meta = sly.ProjectMeta(obj_classes=[fg_class])
+
+    sly_labels = []
     sly.logger.info("Number of extracted objects: {}".format(len(cc_area)))
     for idx, (cc_color, area) in enumerate(cc_area):
-        object_mask = (final_mask == cc_color).astype(np.uint8) * 255
-        sly.image.write(os.path.join(args.vis_dir, '005_object_{}.png'.format(idx)), object_mask)
+        object_mask = (final_mask == cc_color)
+        if args.debug_vis:
+            sly.image.write(os.path.join(args.vis_dir, '005_object_{}.png'.format(idx)), object_mask.astype(np.uint8) * 255)
+        sly_geometry = sly.Bitmap(data=object_mask)
+        sly_label = sly.Label(sly_geometry, fg_class)
+        sly_labels.append(sly_label)
+
+    ann = sly.Annotation(mask.shape[:2], labels=sly_labels)
+    if args.debug_vis:
+        render = np.zeros(ann.img_size + (3,), dtype=np.uint8)
+        ann.draw(render)
+        sly.image.write(os.path.join(args.vis_dir, '006_sly_ann_vis.png'), render)
+
 
     sly.logger.info("SCRIPT EXECUTED")
 
