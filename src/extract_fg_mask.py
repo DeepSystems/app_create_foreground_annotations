@@ -54,7 +54,7 @@ def extract_foreground():
         sly.image.write(os.path.join(args.vis_dir, '001_alpha.png'), mask)
 
     labeled_image, num_cc = skimage.measure.label(mask, background=0, return_num=True)
-    sly.logger.info("find {} connected components".format(num_cc))
+    sly.logger.info("{} connected components".format(num_cc))
     if args.debug_vis:
         vis = skimage.color.label2rgb(labeled_image, bg_label=0)
         sly.image.write(os.path.join(args.vis_dir, '002_components.png'), vis * 255)
