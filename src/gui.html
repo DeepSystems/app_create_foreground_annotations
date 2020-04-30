@@ -17,8 +17,6 @@
         </sly-field>
       </div>
 
-      
-
       <div class="mt15 mb10">
         <sly-field class="mt15 mb10" title="Alpha channel threshold" :description="`0 means fully transparent, 255  - no transparency. Keep all pixels with transparency >= ${state.alphaThreshold}`">
           <el-slider class="ml10"
@@ -43,6 +41,17 @@
         </sly-field>
       </div>
 
+      <div class="mt15 mb10">
+        <sly-field class="mt15 mb10" title="Maximum number of objects" description="Limit on how many foregrounds should be extracted. Foregrounds areas are sorted in descending order">
+          <el-slider class="ml10"
+            :min="0"
+            :max="255"
+            v-model="state.maxNumObjects"
+            show-input>
+          </el-slider>
+        </sly-field>
+      </div>
+
       <div class="mt15">
         <el-button type="primary" size="small" @click="command('qqq')">Apply</el-button>
         <el-button type="danger" size="small">Reset</el-button>
@@ -58,7 +67,7 @@
   <card class="mt15">
     <sly-table :content="data.table"></sly-table>
   </card>
-    <card class="mt15">
-    <sly-logs :content="data.table"></sly-logs>
+  <card class="mt15" style="flex: 1">
+    <sly-logs :task-id="data.taskId"></sly-logs>
   </card>
 </div>
