@@ -9,10 +9,17 @@
             <el-option
               v-for="item in data.projects"
               :key="item.value"
-              :label="`${item.name} (${data.projectsImagesCnt[item.id]})`"
+              :label="`${item.name} (${data.projectsImagesCnt[item.id]} images)`"
               :value="item.id">
             </el-option>
           </el-select>
+        </sly-field>
+      </div>
+
+      <div class="mt15 mb10">
+        <sly-field class="mt15 mb10" title="Apply to sample (%)" description="Persent % of images that should be processed"> 
+          <el-input-number :disabled="!state.sampleFlag" v-model="state.samplePercent" :step="0.5" :min="0.1" :max="100"></el-input-number>
+          <el-checkbox slot="title" v-model="state.sampleFlag"></el-checkbox>
         </sly-field>
       </div>
 
@@ -62,7 +69,9 @@
   <card class="mt15" style="align-items: stretch;">
     <el-progress :percentage="70"></el-progress>
   </card>
-  <card class="mt15">
+  <card class="mt15"
+    title="Processed images" 
+    subtitle="Foreground objects stats per image">
     <sly-table :content="data.table"></sly-table>
   </card>
   <el-row>

@@ -1,5 +1,6 @@
 {
 	"alphaThreshold": 100,
 	"areaThreshold": 5,
-	"maxNumObjects": 3
+	"maxNumObjects": 3,
+	"samplePercent": 5
 }
