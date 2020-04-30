@@ -42,18 +42,13 @@
       </div>
 
       <div class="mt15 mb10">
-        <sly-field class="mt15 mb10" title="Maximum number of objects" description="Limit on how many foregrounds should be extracted. Foregrounds areas are sorted in descending order">
-          <el-slider class="ml10"
-            :min="0"
-            :max="255"
-            v-model="state.maxNumObjects"
-            show-input>
-          </el-slider>
+        <sly-field class="mt15 mb10" title="Maximum number of objects" description="Limit how many foregrounds should be extracted. Foregrounds areas are sorted in descending order">
+          <el-input-number v-model="state.maxNumObjects" :step="1" :min="1"></el-input-number>
         </sly-field>
       </div>
 
       <div class="mt15">
-        <el-button type="primary" size="small" @click="command('qqq')">Apply</el-button>
+        <el-button type="primary" size="small" @click="command('/workdir/scr/my_script.py')">Apply</el-button>
         <el-button type="danger" size="small">Reset</el-button>
       </div>
     </card>
@@ -67,7 +62,11 @@
   <card class="mt15">
     <sly-table :content="data.table"></sly-table>
   </card>
-  <card class="mt15" style="flex: 1">
-    <sly-logs :task-id="data.taskId"></sly-logs>
-  </card>
+  <el-row>
+    <el-col :span="13">
+      <card class="mt15">
+        <sly-logs :task-id="data.taskId"></sly-logs>
+      </card>
+    </el-col>
+  </el-row>
 </div>

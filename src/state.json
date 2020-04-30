@@ -1,5 +1,5 @@
 {
 	"alphaThreshold": 100,
 	"areaThreshold": 5,
-	"maxNumObjects": 10
+	"maxNumObjects": 3
 }
