@@ -1,0 +1,64 @@
+<!-- https://element.eleme.io/1.4/#/en-US/component/input-number -->
+<div>
+  <div class="fflex" style="align-items: normal;">
+    <card style="flex: 1" class="mr15" title="Settings">
+
+
+      <div class="mt15 mb10">
+        <sly-field class="mt15 mb10" title="Choose project">
+          <el-select v-model="state.project" filterable>
+            <el-option
+              v-for="item in data.projects"
+              :key="item.value"
+              :label="`${item.name} (${data.projectsImagesCnt[item.id]})`"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </sly-field>
+      </div>
+
+      
+
+      <div class="mt15 mb10">
+        <sly-field class="mt15 mb10" title="Alpha channel threshold" :description="`0 means fully transparent, 255  - no transparency. Keep all pixels with transparency >= ${state.alphaThreshold}`">
+          <el-slider class="ml10"
+            :min="0"
+            :max="255"
+            v-model="state.alphaThreshold"
+            show-input>
+          </el-slider>
+        </sly-field>
+      </div>
+
+      <div class="mt15 mb10">
+        <sly-field class="mt15 mb10" 
+          title="Object area threshold (%)" 
+          :description="`Remove all objects with area <= ${state.areaThreshold} %`">
+          <el-slider class="ml10"
+            :min="0"
+            :max="100"
+            v-model="state.areaThreshold"
+            show-input>
+          </el-slider>
+        </sly-field>
+      </div>
+
+      <div class="mt15">
+        <el-button type="primary" size="small" @click="command('qqq')">Apply</el-button>
+        <el-button type="danger" size="small">Reset</el-button>
+      </div>
+    </card>
+    <card style="flex: 1">
+      <sly-gallery :content="data.gallery"></sly-gallery>
+    </card>
+  </div>
+  <card class="mt15" style="align-items: stretch;">
+    <el-progress :percentage="70"></el-progress>
+  </card>
+  <card class="mt15">
+    <sly-table :content="data.table"></sly-table>
+  </card>
+    <card class="mt15">
+    <sly-logs :content="data.table"></sly-logs>
+  </card>
+</div>
