@@ -3,7 +3,6 @@
   <div class="fflex" style="align-items: normal;">
     <card style="flex: 1" class="mr15" title="Settings">
 
-
       <div class="mt15 mb10">
         <sly-field class="mt15 mb10" title="Choose project">
           <el-select v-model="state.project" filterable>
@@ -52,7 +51,11 @@
         <el-button type="danger" size="small">Reset</el-button>
       </div>
     </card>
-    <card style="flex: 1">
+    <card 
+      style="flex: 1"
+      title="Test on random image" 
+      :subtitle="`Apply settings to a random image from project ${state.project}`">
+      <el-button type="primary" class="mb15" size="small" @click="command('/workdir/scr/test_random.py')">Test</el-button>
       <sly-gallery :content="data.gallery"></sly-gallery>
     </card>
   </div>
