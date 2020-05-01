@@ -6,5 +6,6 @@
 	"className": "fg",
 	"classShape": "any",
 	"classColor": "#FF0000",
+	"sampleFlag": true,
 	"project": 1
 }
