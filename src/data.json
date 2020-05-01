@@ -24,5 +24,15 @@
     ]
   ],
   "table": [ {"name": "12aaa3", "xvalue": 777}, {"name": "3bbb33", "xvalue": 999} ],
-  "taskId": 48
+  "taskId": 48,
+  "fgPossibleShapes": [
+    {
+      "name": "Any Shape",
+      "value": "any"
+    },
+    {
+      "name": "Bitmap",
+      "value": "bitmap"
+    }
+  ]
 }

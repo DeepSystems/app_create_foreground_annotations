@@ -2,5 +2,7 @@
 	"alphaThreshold": 100,
 	"areaThreshold": 5,
 	"maxNumObjects": 3,
-	"samplePercent": 5
+	"samplePercent": 5,
+	"className": "fg",
+	"classShape": "any"
 }

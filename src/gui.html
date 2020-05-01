@@ -48,10 +48,33 @@
       </div>
 
       <div class="mt15 mb10">
-        <sly-field class="mt15 mb10" title="Maximum number of objects" description="Limit how many foregrounds should be extracted. Foregrounds areas are sorted in descending order">
+        <sly-field class="mt15 mb10" title="Maximum number of objects per image" description="Limit how many foregrounds should be extracted. Foregrounds areas are sorted in descending order">
           <el-input-number v-model="state.maxNumObjects" :step="1" :min="1"></el-input-number>
         </sly-field>
       </div>
+
+      <div class="mt15 mb10">
+        <sly-field class="mt15 mb10" title="Foreground class" description="Define class settings for all extracted foreground objects">
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <el-input style="" placeholder="Class name" v-model="state.className"></el-input>
+            </el-col>
+            <el-col :span="8">
+              <el-select v-model="state.classShape" filterable>
+                <el-option
+                  v-for="item in data.fgPossibleShapes"
+                  :key="item.value"
+                  :label="item.name"
+                  :value="item.value">
+                </el-option>
+              </el-select>  
+            </el-col>
+            <el-col :span="8"><el-input style="" placeholder="Please input3"></el-input></el-col>
+          </el-row>
+        </sly-field>
+      </div>
+
+      <!-- "width: 170px;" -->
 
       <div class="mt15">
         <el-button type="primary" size="small" @click="command('/workdir/scr/my_script.py')">Apply</el-button>
