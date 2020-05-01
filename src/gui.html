@@ -135,7 +135,7 @@
     subtitle="Foreground objects stats per image">
     <sly-table :content="data.table"></sly-table>
   </card>
-
+  <card><pre>{{state}}</pre></card>
   <el-collapse class="mt15" v-model="state.logsOpened">
     <el-collapse-item title="Application logs" name="1">
       <sly-logs :task-id="data.taskId"></sly-logs>
