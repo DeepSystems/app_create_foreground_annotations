@@ -1,7 +1,8 @@
 <!-- https://element.eleme.io/1.4/#/en-US/component/input-number -->
+<!-- http://192.168.1.42/reports/124 -->
 <div>
   <div class="fflex" style="align-items: normal;">
-    <card style="flex: 1" class="mr15" title="Settings">
+    <card style="flex: 1" class="mr15" title="Settings" subtitle="Foreground objects extraction options">
 
       <div class="mt15 mb10">
         <sly-field class="mt15 mb10" title="Choose project">
@@ -18,7 +19,9 @@
 
       <div class="mt15 mb10">
         <sly-field class="mt15 mb10" title="Apply to sample (%)" description="Persent % of images that should be processed"> 
-          <el-input-number :disabled="!state.sampleFlag" v-model="state.samplePercent" :step="0.5" :min="0.1" :max="100"></el-input-number>
+          <!-- <el-input-number :disabled="!state.sampleFlag" v-model="state.samplePercent" :step="0.5" :min="0.1" :max="100"></el-input-number> -->
+          <el-slider disabled="!state.sampleFlag" class="ml10" :min="0.1" :max="100" :step="0.5" v-model="state.samplePercent" show-input> </el-slider>
+          <!-- TODO: error here -->
           <el-checkbox slot="title" v-model="state.sampleFlag"></el-checkbox>
         </sly-field>
       </div>
@@ -53,8 +56,9 @@
         </sly-field>
       </div>
 
+      <!-- TODO: elements in a row-->
       <div class="mt15 mb10">
-        <sly-field class="mt15 mb10" title="Foreground class" description="Define class settings for all extracted foreground objects">
+        <sly-field class="mt15 mb10" title="Foreground class" description="Class settings for foreground objects">
           <el-row :gutter="20">
             <el-col :span="10">
               <el-input style="" placeholder="Class name" v-model="state.className"></el-input>
@@ -73,8 +77,6 @@
           </el-row>
         </sly-field>
       </div>
-
-      <!-- "width: 170px;" -->
 
       <div class="mt15">
         <el-button type="primary" size="small" @click="command('/workdir/scr/my_script.py')">Apply</el-button>
