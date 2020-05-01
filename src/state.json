@@ -4,5 +4,6 @@
 	"maxNumObjects": 3,
 	"samplePercent": 5,
 	"className": "fg",
-	"classShape": "any"
+	"classShape": "any",
+	"classColor": "#FF0000"
 }

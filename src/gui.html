@@ -56,10 +56,10 @@
       <div class="mt15 mb10">
         <sly-field class="mt15 mb10" title="Foreground class" description="Define class settings for all extracted foreground objects">
           <el-row :gutter="20">
-            <el-col :span="8">
+            <el-col :span="10">
               <el-input style="" placeholder="Class name" v-model="state.className"></el-input>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="10">
               <el-select v-model="state.classShape" filterable>
                 <el-option
                   v-for="item in data.fgPossibleShapes"
@@ -69,7 +69,7 @@
                 </el-option>
               </el-select>  
             </el-col>
-            <el-col :span="8"><el-input style="" placeholder="Please input3"></el-input></el-col>
+            <el-col :span="4"><el-color-picker v-model="state.classColor" color-format="hex"></el-color-picker></el-col>
           </el-row>
         </sly-field>
       </div>
