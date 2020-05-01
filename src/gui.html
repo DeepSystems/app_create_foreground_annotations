@@ -5,7 +5,7 @@
     <card style="flex: 1" class="mr15" title="Settings" subtitle="Foreground objects extraction options">
 
       <div class="mt15 mb10">
-        <sly-field class="mt15 mb10" title="Choose project">
+        <sly-field title="Choose project">
           <el-select v-model="state.project" filterable>
             <el-option
               v-for="item in data.projects"
@@ -20,8 +20,10 @@
       <div class="mt15 mb10">
         <sly-field class="mt15 mb10" title="Apply to sample (%)" description="Persent % of images that should be processed"> 
           <!-- <el-input-number :disabled="!state.sampleFlag" v-model="state.samplePercent" :step="0.5" :min="0.1" :max="100"></el-input-number> -->
-          <el-slider disabled="!state.sampleFlag" class="ml10" :min="0.1" :max="100" :step="0.5" v-model="state.samplePercent" show-input> </el-slider>
+          <!-- <el-slider disabled="!state.sampleFlag" class="ml10" :min="0.1" :max="100" :step="0.5" v-model="state.samplePercent" show-input> </el-slider> -->
+          <el-slider class="ml10" :min="0.1" :max="100" :step="0.5" v-model="state.samplePercent" show-input> </el-slider>
           <!-- TODO: error here -->
+          <!-- TODO: показать при изменении ползунка сколько картинок будет обработано -->
           <el-checkbox slot="title" v-model="state.sampleFlag"></el-checkbox>
         </sly-field>
       </div>
@@ -79,8 +81,19 @@
       </div>
 
       <div class="mt15">
-        <el-button type="primary" size="small" @click="command('/workdir/scr/my_script.py')">Apply</el-button>
-        <el-button type="danger" size="small">Reset</el-button>
+        <el-tooltip class="item" effect="dark" content="Start extraction process" placement="top-start">
+          <el-button type="primary" size="small" @click="command('/workdir/scr/my_script.py')">Apply</el-button>
+        </el-tooltip>
+        
+        <!-- TODO: 
+        имя проекта не показывате + 
+        как задисейблить кнопку если не выбран проект + 
+        как показать диалог и не перетереть значение
+        -->
+
+        <el-tooltip class="item" effect="dark" :content="`Remove annotation from project ${data.projects[state.project].name}`" placement="top-start">
+          <el-button type="danger" size="small">Reset</el-button>
+        </el-tooltip>
       </div>
     </card>
     <card 
