@@ -2,11 +2,13 @@
   "projects": [
     {
       "name": "Max",
-      "id": 1
+      "id": 1,
+      "count": 0
     },
     {
       "name": "Magic",
-      "id": 2
+      "id": 2,
+      "count": 1
     }
   ],
   "projectsImagesCnt": {
