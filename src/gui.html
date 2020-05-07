@@ -11,7 +11,7 @@
               v-for="item in data.projects"
               :key="item.value"
               :label="`${item.name} (${data.projectsImagesCnt[item.id]} images)`"
-              :value="item.count">
+              :value="item.index">
             </el-option>
           </el-select>
         </sly-field>
@@ -74,8 +74,8 @@
 
       <sly-field class="mt15 mb10" title="Foreground class" description="Class settings for foreground objects">
         <div class="fflex">
-          <el-input class="mr15" style="" placeholder="Class name" v-model="state.className"></el-input>
-          <el-select class="mr15" v-model="state.classShape" filterable>
+          <el-input class="mr15" style="" placeholder="Class name" v-model="state.fgName"></el-input>
+          <el-select class="mr15" v-model="state.fgShape" filterable>
             <el-option
               v-for="item in data.fgPossibleShapes"
               :key="item.value"
@@ -83,7 +83,7 @@
               :value="item.value">
             </el-option>
           </el-select>  
-          <el-color-picker style="width: 100px;" v-model="state.classColor" color-format="hex"></el-color-picker>
+          <el-color-picker style="width: 100px;" v-model="state.fgColor" color-format="hex"></el-color-picker>
         </div>
       </sly-field>
         

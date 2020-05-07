@@ -3,12 +3,12 @@
     {
       "name": "Max",
       "id": 1,
-      "count": 0
+      "index": 0
     },
     {
       "name": "Magic",
       "id": 2,
-      "count": 1
+      "index": 1
     }
   ],
   "projectsImagesCnt": {
