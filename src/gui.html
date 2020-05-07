@@ -9,32 +9,19 @@
           <el-select v-model="state.project" filterable>
             <el-option
               v-for="item in data.projects"
-              :key="item.value"
-              :label="`${item.name} (${data.projectsImagesCnt[item.id]} images)`"
+              :key="item.id"
+              :label="`${item.name} (${item.imagesCount} images)`"
               :value="item.index">
             </el-option>
           </el-select>
         </sly-field>
       </div>
 
-      <!--
-      <script type="text/javascript">
-      //<![CDATA[
-      function countImagesToProcess()
-      {
-        percent = $state.samplePercent;
-        projectId = $data.projects[state.project].id
-        imagesCount = $data.projectsImagesCnt[project_id];
-        state.sampleImagesCount = (percent * imagesCount / 100).toFixed()
-      }
-      //]]>
-      </script> -->
-
       <div class="mt15 mb10">
         <sly-field class="mt15 mb10" title="Apply to sample (%)" :description="`${data.projects[state.project].name} Persent % of images that should be processed`"> 
           <el-slider class="ml10" :disabled="!state.sampleFlag" :min="0.1" :max="100" :step="0.5" v-model="state.samplePercent" show-input> </el-slider>
           <el-checkbox slot="title" v-model="state.sampleFlag"></el-checkbox>
-          <div>Images: {{(data.projectsImagesCnt[data.projects[state.project].id] * state.samplePercent / 100).toFixed()}}</div>
+          <div>Images: {{(data.projects[state.project].imagesCount * state.samplePercent / 100).toFixed()}}</div>
         </sly-field>
       </div>
 
@@ -72,47 +59,10 @@
         </sly-field>
       </div>
 
-      <sly-field class="mt15 mb10" title="Foreground class" description="Class settings for foreground objects">
-        <div class="fflex">
-          <el-input class="mr15" style="" placeholder="Class name" v-model="state.fgName"></el-input>
-          <el-select class="mr15" v-model="state.fgShape" filterable>
-            <el-option
-              v-for="item in data.fgPossibleShapes"
-              :key="item.value"
-              :label="item.name"
-              :value="item.value">
-            </el-option>
-          </el-select>  
-          <el-color-picker style="width: 100px;" v-model="state.fgColor" color-format="hex"></el-color-picker>
-        </div>
-      </sly-field>
-        
-
-      <!-- <div class="mt15 mb10">
-        
-          <el-row :gutter="20">
-            <el-col :span="10">
-              
-            </el-col>
-            <el-col :span="10">
-              
-              
-            </el-col>
-            <el-col :span="4"></el-col>
-          </el-row>
-        </sly-field>
-      </div> -->
-
       <div class="mt15">
         <el-tooltip class="item" effect="dark" content="Start extraction process" placement="top-start">
           <el-button type="primary" size="small" @click="command('/workdir/scr/my_script.py')">Apply</el-button>
         </el-tooltip>
-        
-        <!-- TODO:
-        не работает ${data.projects[state.project].name - всегда одно и тоже значение 
-        как задисейблить кнопку если не выбран проект + 
-        как показать диалог и не перетереть значение
-        -->
 
         <el-tooltip class="item" effect="dark" :content="`Remove annotation from project ${data.projects[state.project].name}`" placement="top-start">
           <el-button type="danger" size="small">Reset</el-button>
