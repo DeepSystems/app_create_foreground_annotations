@@ -54,5 +54,19 @@
 #         time.sleep(5)
 #
 #
-# if __name__ == "__main__":
-#     main()
+
+import supervisely_lib as sly
+
+
+def main():
+    sly.logger.info("APPLICATION_STARTED")
+
+    
+
+
+
+if __name__ == "__main__":
+    main()
+
+
+#54
