@@ -1,11 +1,15 @@
 {
 	"alphaThreshold": 100,
 	"areaThreshold": 5,
-	"maxNumObjects": 3,
+	"maxNumObjects": 1,
+
 	"samplePercent": 5,
+	"sampleFlag": true,
+
 	"className": "fg",
 	"classShape": "any",
 	"classColor": "#FF0000",
-	"sampleFlag": true,
-	"project": 1
+
+	"projectId": 1,
+    "datasetIds": [1, 1]
 }
