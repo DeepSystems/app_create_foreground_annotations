@@ -14,26 +14,35 @@ FG_COLOR = "fgColor"
 FG_SHAPE_ANY = sly.AnyGeometry.geometry_name()
 FG_SHAPE_BITMAP = sly.Bitmap.geometry_name()
 
+#state fields
 STATE = "state"
-PROJECT_ID = "project"
+PROJECT_INDEX = "projectIndex"
+
 SAMPLE_FLAG = "sampleFlag"
-SAMPLE_PERCENT = "samplePercent"
+SAMPLE_COUNT = "sampleCount"
+
 ALPHA_THRESHOLD = "alphaThreshold"
 AREA_THRESHOLD = "areaThreshold"
 MAX_NUMBER_OF_OBJECTS = "maxNumObjects"
 
-DEFAULTS = {
-    PROJECT_ID: None,
+LOGS_OPENED = "logsOpened"
+PROGRESS = "progress"
+
+STATE_DEFAULTS = {
+    PROJECT_INDEX: 0,
+    SAMPLE_FLAG: False,
+    SAMPLE_COUNT: 1,
 
     ALPHA_THRESHOLD: 100,
     AREA_THRESHOLD: 5,
     MAX_NUMBER_OF_OBJECTS: 1,
 
-    SAMPLE_FLAG: True,
-    SAMPLE_PERCENT: 20,
-
     FG_NAME: "fg",
     FG_SHAPE: FG_SHAPE_ANY,
-    FG_COLOR: sly.color.rgb2hex([0, 255, 0])
+    FG_COLOR: sly.color.rgb2hex([0, 255, 0]),
+
+    PROGRESS: 0,
+
+    LOGS_OPENED: [] #["logs"]
 }
 

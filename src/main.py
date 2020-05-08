@@ -3,7 +3,7 @@ import json
 import html
 
 import supervisely_lib as sly
-import constants
+import constants as const
 import utils
 
 
@@ -26,7 +26,7 @@ def main():
     data = {}
     data["projects"] = utils.read_projects(api, workspace_id)
     data["table"] = []
-    data["gallery"] = []
+    # data["gallery"] = []
 
 
 
@@ -57,8 +57,7 @@ def main():
 
     payload = {}
     payload["template"] = gui_template
-    payload["state"] = constants.DEFAULTS
-    payload["state"]["project"] = 0
+    payload[const.STATE] = const.STATE_DEFAULTS
     payload["data"] = data
 
 

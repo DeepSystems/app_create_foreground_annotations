@@ -2,12 +2,109 @@
 <!-- http://192.168.1.42/reports/124 -->
 
 <div>
-  <div class="fflex" style="align-items: normal;">
-    <card style="flex: 1" class="mr15" title="Settings" subtitle="Foreground objects extraction options">
 
-      <div class="mt15 mb10">
-        <sly-field title="Choose project">
-          <el-select v-model="state.project" filterable>
+
+  <!--<div class="fflex" style="align-items: normal;">-->
+    <!--<card style="flex: 1" class="mr15" title="Settings" subtitle="Foreground objects extraction options">-->
+
+      <!--<div class="mt15 mb10">-->
+        <!--<sly-field title="Choose project">-->
+          <!--<el-select v-model="state.project" filterable>-->
+            <!--<el-option-->
+              <!--v-for="item in data.projects"-->
+              <!--:key="item.id"-->
+              <!--:label="`${item.name} (${item.imagesCount} images)`"-->
+              <!--:value="item.index">-->
+            <!--</el-option>-->
+          <!--</el-select>-->
+        <!--</sly-field>-->
+      <!--</div>-->
+
+      <!--<div class="mt15 mb10">-->
+        <!--<sly-field class="mt15 mb10" title="Apply to sample (%)" :description="`${data.projects[state.project].name} Persent % of images that should be processed`"> -->
+          <!--<el-slider class="ml10" :disabled="!state.sampleFlag" :min="0.1" :max="100" :step="0.5" v-model="state.samplePercent" show-input> </el-slider>-->
+          <!--<el-checkbox slot="title" v-model="state.sampleFlag"></el-checkbox>-->
+          <!--&lt;!&ndash; <div>Images: {{(data.projects[state.project].imagesCount * state.samplePercent / 100).toFixed()}}</div> &ndash;&gt;-->
+        <!--</sly-field>-->
+      <!--</div>-->
+
+      <!--<div class="mt15 mb10">-->
+        <!--<sly-field class="mt15 mb10" title="Alpha channel threshold" :description="`0 means fully transparent, 255  - no transparency. Keep all pixels with transparency >= ${state.alphaThreshold}`">-->
+          <!--<el-slider class="ml10"-->
+            <!--:min="0"-->
+            <!--:max="255"-->
+            <!--v-model="state.alphaThreshold"-->
+            <!--show-input>-->
+          <!--</el-slider>-->
+        <!--</sly-field>-->
+      <!--</div>-->
+
+      <!--<hr style="height: 1px; color: #e0e0e0; background-color: #e0e0e0; border: none;"/>-->
+
+      <!--&lt;!&ndash; <hr style="border-top: 1px solid red;"/> &ndash;&gt;-->
+
+      <!--<div class="mt15 mb10">-->
+        <!--<sly-field class="mt15 mb10" -->
+          <!--title="Object area threshold (%)" -->
+          <!--:description="`Remove all objects with area <= ${state.areaThreshold} %`">-->
+          <!--<el-slider class="ml10"-->
+            <!--:min="0"-->
+            <!--:max="100"-->
+            <!--v-model="state.areaThreshold"-->
+            <!--show-input>-->
+          <!--</el-slider>-->
+        <!--</sly-field>-->
+      <!--</div>-->
+
+      <!--<div class="mt15 mb10">-->
+        <!--<sly-field class="mt15 mb10" title="Maximum number of objects per image" description="Limit how many foregrounds should be extracted. Foregrounds areas are sorted in descending order">-->
+          <!--<el-input-number v-model="state.maxNumObjects" :step="1" :min="1"></el-input-number>-->
+        <!--</sly-field>-->
+      <!--</div>-->
+
+      <!--<div class="mt15">-->
+        <!--<el-tooltip class="item" effect="dark" content="Start extraction process" placement="top-start">-->
+          <!--<el-button type="primary" size="small" @click="command('/workdir/scr/my_script.py')">Apply</el-button>-->
+        <!--</el-tooltip>-->
+
+        <!--<el-tooltip class="item" effect="dark" :content="`Remove annotation from project ${data.projects[state.project].name}`" placement="top-start">-->
+          <!--<el-button type="danger" size="small">Reset</el-button>-->
+        <!--</el-tooltip>-->
+      <!--</div>-->
+    <!--</card>-->
+
+
+    <!--&lt;!&ndash;<card &ndash;&gt;-->
+      <!--&lt;!&ndash;style="flex: 1"&ndash;&gt;-->
+      <!--&lt;!&ndash;title="Test on random image" &ndash;&gt;-->
+      <!--&lt;!&ndash;:subtitle="`Apply settings to a random image from project ${data.projects[state.project].name}`">&ndash;&gt;-->
+      <!--&lt;!&ndash;<el-button type="primary" class="mb15" size="small" @click="command('/workdir/scr/test_random.py')">Test</el-button>&ndash;&gt;-->
+      <!--&lt;!&ndash;<sly-gallery height="450px" :content="data.gallery"></sly-gallery>&ndash;&gt;-->
+    <!--&lt;!&ndash;</card>&ndash;&gt;-->
+
+
+  <!--</div>-->
+  <!--<card class="mt15" style="align-items: stretch;">-->
+    <!--<el-progress :percentage="70"></el-progress>-->
+  <!--</card>-->
+  <!--<card class="mt15"-->
+    <!--title="Processed images" -->
+    <!--subtitle="Foreground objects stats per image">-->
+    <!--<sly-table :content="data.table"></sly-table>-->
+  <!--</card>-->
+  <!--<card><pre>{{state}}</pre></card>-->
+
+  <!--class="mt15"-->
+
+
+
+
+  <!--======================================= Settings =============================================================-->
+  <el-row :gutter="20">
+    <el-col :span="8">
+      <card title="Settings" subtitle="Define how to extract foreground objects">
+        <sly-field title="Project">
+          <el-select class="mt10" v-model="state.projectIndex" filterable>
             <el-option
               v-for="item in data.projects"
               :key="item.id"
@@ -16,18 +113,22 @@
             </el-option>
           </el-select>
         </sly-field>
-      </div>
 
-      <div class="mt15 mb10">
-        <sly-field class="mt15 mb10" title="Apply to sample (%)" :description="`${data.projects[state.project].name} Persent % of images that should be processed`"> 
-          <el-slider class="ml10" :disabled="!state.sampleFlag" :min="0.1" :max="100" :step="0.5" v-model="state.samplePercent" show-input> </el-slider>
+        <sly-field class="mt10" title="Data sampling" description="How many images will be sampled">
           <el-checkbox slot="title" v-model="state.sampleFlag"></el-checkbox>
-          <div>Images: {{(data.projects[state.project].imagesCount * state.samplePercent / 100).toFixed()}}</div>
+          <el-slider class="ml10"
+                     :disabled="!state.sampleFlag || data.projects[state.projectIndex].imagesCount !== 1"
+                     :min="1"
+                     :max="data.projects[state.projectIndex].imagesCount"
+                     :step="1"
+                     v-model="state.sampleCount" show-input>
+          </el-slider>
+          <!-- <div>Images: {{(data.projects[state.project].imagesCount * state.samplePercent / 100).toFixed()}}</div> -->
         </sly-field>
-      </div>
 
-      <div class="mt15 mb10">
-        <sly-field class="mt15 mb10" title="Alpha channel threshold" :description="`0 means fully transparent, 255  - no transparency. Keep all pixels with transparency >= ${state.alphaThreshold}`">
+        <hr class="mb15" style="height: 1px; color: #e0e0e0; background-color: #e0e0e0; border: none;"/>
+
+        <sly-field title="Alpha channel threshold" :description="`0 means fully transparent, 255  - no transparency. Keep all pixels with transparency >= ${state.alphaThreshold}`">
           <el-slider class="ml10"
             :min="0"
             :max="255"
@@ -35,15 +136,9 @@
             show-input>
           </el-slider>
         </sly-field>
-      </div>
 
-      <hr/>
-
-      <hr style="border-top: 1px solid red;"/>
-
-      <div class="mt15 mb10">
-        <sly-field class="mt15 mb10" 
-          title="Object area threshold (%)" 
+        <sly-field class="mt15"
+          title="Object area threshold (%)"
           :description="`Remove all objects with area <= ${state.areaThreshold} %`">
           <el-slider class="ml10"
             :min="0"
@@ -52,45 +147,53 @@
             show-input>
           </el-slider>
         </sly-field>
-      </div>
 
-      <div class="mt15 mb10">
-        <sly-field class="mt15 mb10" title="Maximum number of objects per image" description="Limit how many foregrounds should be extracted. Foregrounds areas are sorted in descending order">
-          <el-input-number v-model="state.maxNumObjects" :step="1" :min="1"></el-input-number>
+        <sly-field class="mt15" title="Maximum number of objects per image" description="Limit how many foregrounds should be extracted. Foregrounds areas are sorted in descending order">
+          <el-input-number v-model="state.maxNumObjects" :step="1" :min="1" size="small"></el-input-number>
         </sly-field>
-      </div>
 
-      <div class="mt15">
-        <el-tooltip class="item" effect="dark" content="Start extraction process" placement="top-start">
-          <el-button type="primary" size="small" @click="command('/workdir/scr/my_script.py')">Apply</el-button>
-        </el-tooltip>
+        <!--<hr class="mb15" style="height: 1px; color: #e0e0e0; background-color: #e0e0e0; border: none;"/>-->
 
-        <el-tooltip class="item" effect="dark" :content="`Remove annotation from project ${data.projects[state.project].name}`" placement="top-start">
-          <el-button type="danger" size="small">Reset</el-button>
-        </el-tooltip>
-      </div>
-    </card>
-    <card 
-      style="flex: 1"
-      title="Test on random image" 
-      :subtitle="`Apply settings to a random image from project ${data.projects[state.project].name}`">
-      <el-button type="primary" class="mb15" size="small" @click="command('/workdir/scr/test_random.py')">Test</el-button>
-      <sly-gallery height="450px" :content="data.gallery"></sly-gallery>
-    </card>
-  </div>
-  <card class="mt15" style="align-items: stretch;">
-    <el-progress :percentage="70"></el-progress>
-  </card>
-  <card class="mt15"
-    title="Processed images" 
-    subtitle="Foreground objects stats per image">
-    <sly-table :content="data.table"></sly-table>
-  </card>
-  <card><pre>{{state}}</pre></card>
+
+        <!--<el-button type="primary" size="small" @click="command('/workdir/scr/extract.py')">Apply</el-button>-->
+
+        <!--https://zavoloklom.github.io/material-design-iconic-font/icons.html-->
+        <!--<i class="zmdi zmdi-receipt"></i>-->
+
+        <!--<el-button-group>-->
+          <!--<el-button type="primary" style="" icon="arrow-left" size="small">Previous Page</el-button>-->
+          <!--<el-button type="primary" style="" size="small">Next Page<i class="el-icon-arrow-right el-icon-right"></i></el-button>-->
+        <!--</el-button-group>-->
+
+        <!--<el-tooltip class="item" effect="dark" content="Start extraction process" placement="top-start">-->
+          <!--<el-button type="primary" size="small" @click="command('/workdir/scr/extract.py')">Apply</el-button>-->
+        <!--</el-tooltip>-->
+
+        <!--<el-tooltip class="item" effect="dark" content="Start extraction process" placement="top-start">-->
+          <!--<el-button type="primary" size="small" @click="command('/workdir/scr/extract.py')">Apply</el-button>-->
+        <!--</el-tooltip>-->
+
+        <!--v-if-->
+        <!--<el-progress :percentage="70"></el-progress>-->
+
+        <!--<el-row :gutter="20">-->
+
+        <!--</el-row>-->
+
+      </card>
+    </el-col>
+    <el-col :span="16">
+      <card title="Statistics" subtitle="Foreground stats per image">
+      </card>
+    </el-col>
+  </el-row>
+
+  <!--=====================================  Debug state ===========================================================-->
+  <card class="mt15" title="Debug state"><pre>{{state}}</pre></card>
+  <!--=======================================   Logs   =============================================================-->
   <el-collapse class="mt15" v-model="state.logsOpened">
-    <el-collapse-item title="Application logs" name="1">
+    <el-collapse-item title="Application logs" name="logs">
       <sly-logs :task-id="data.taskId"></sly-logs>
     </el-collapse-item>
   </el-collapse>
-
 </div>
