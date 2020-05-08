@@ -11,6 +11,8 @@ FG_NAME = "fgName"
 FG_SHAPE = "fgShape"
 FG_COLOR = "fgColor"
 
+FG_SHAPE_ANY = sly.AnyGeometry.geometry_name()
+FG_SHAPE_BITMAP = sly.Bitmap.geometry_name()
 
 STATE = "state"
 PROJECT_ID = "project"
@@ -31,7 +33,7 @@ DEFAULTS = {
     SAMPLE_PERCENT: 20,
 
     FG_NAME: "fg",
-    FG_SHAPE: "any",
+    FG_SHAPE: FG_SHAPE_ANY,
     FG_COLOR: sly.color.rgb2hex([0, 255, 0])
 }
 
