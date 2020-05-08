@@ -25,10 +25,11 @@ def main():
 
     data = {}
     data["projects"] = utils.read_projects(api, workspace_id)
-    data["table"] = []
-    # data["gallery"] = []
 
-
+    table = []
+    for i in range(40):
+        table.append({"name": sly.rand_str(5), "my_value": i})
+    data[const.TABLE] = table
 
     # data["table"] = [ {"name": "12aaa3", "xvalue": 777}, {"name": "3bbb33", "xvalue": 999} ]
     # data["gallery"] = [

@@ -28,7 +28,11 @@ MAX_NUMBER_OF_OBJECTS = "maxNumObjects"
 LOGS_OPENED = "logsOpened"
 PROGRESS = "progress"
 LOADING = "loading"
+NEED_STOP = "needStop"
 
+TABLE = "table"
+PER_PAGE = "perPage"
+PAGE_SIZES = "pageSizes"
 
 STATE_DEFAULTS = {
     PROJECT_INDEX: 0,
@@ -46,6 +50,10 @@ STATE_DEFAULTS = {
     PROGRESS: 55,
 
     LOADING: False,
+    NEED_STOP: False,
+
+    PER_PAGE: 10,
+    PAGE_SIZES: [10, 15, 20, 50, 100, 250, 500],
 
     LOGS_OPENED: [] #["logs"]
 }
