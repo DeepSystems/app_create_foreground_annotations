@@ -115,9 +115,9 @@
         </sly-field>
 
         <sly-field class="mt10" title="Data sampling" description="How many images will be sampled">
-          <el-checkbox slot="title" v-model="state.sampleFlag"></el-checkbox>
+          <el-checkbox slot="title" :disabled="data.projects[state.projectIndex].imagesCount === 1" v-model="state.sampleFlag"></el-checkbox>
           <el-slider class="ml10"
-                     :disabled="!state.sampleFlag || data.projects[state.projectIndex].imagesCount !== 1"
+                     :disabled="!state.sampleFlag || data.projects[state.projectIndex].imagesCount === 1"
                      :min="1"
                      :max="data.projects[state.projectIndex].imagesCount"
                      :step="1"
@@ -152,38 +152,17 @@
           <el-input-number v-model="state.maxNumObjects" :step="1" :min="1" size="small"></el-input-number>
         </sly-field>
 
-        <!--<hr class="mb15" style="height: 1px; color: #e0e0e0; background-color: #e0e0e0; border: none;"/>-->
-
-
-        <!--<el-button type="primary" size="small" @click="command('/workdir/scr/extract.py')">Apply</el-button>-->
-
-        <!--https://zavoloklom.github.io/material-design-iconic-font/icons.html-->
-        <!--<i class="zmdi zmdi-receipt"></i>-->
-
-        <!--<el-button-group>-->
-          <!--<el-button type="primary" style="" icon="arrow-left" size="small">Previous Page</el-button>-->
-          <!--<el-button type="primary" style="" size="small">Next Page<i class="el-icon-arrow-right el-icon-right"></i></el-button>-->
-        <!--</el-button-group>-->
-
-        <!--<el-tooltip class="item" effect="dark" content="Start extraction process" placement="top-start">-->
-          <!--<el-button type="primary" size="small" @click="command('/workdir/scr/extract.py')">Apply</el-button>-->
-        <!--</el-tooltip>-->
-
-        <!--<el-tooltip class="item" effect="dark" content="Start extraction process" placement="top-start">-->
-          <!--<el-button type="primary" size="small" @click="command('/workdir/scr/extract.py')">Apply</el-button>-->
-        <!--</el-tooltip>-->
-
-        <!--v-if-->
-        <!--<el-progress :percentage="70"></el-progress>-->
-
-        <!--<el-row :gutter="20">-->
-
-        <!--</el-row>-->
-
       </card>
     </el-col>
     <el-col :span="16">
       <card title="Statistics" subtitle="Foreground stats per image">
+        <div slot="header" class="fflex">
+          <el-progress v-if="state.progress !== 0" style="width: 150px" :percentage="state.progress"></el-progress>
+          <el-button-group>
+            <el-button size="small" :loading="state.loading"><i class="zmdi zmdi-play"></i></el-button>
+            <el-button size="small"><i class="zmdi zmdi-stop"></i></el-button>
+          </el-button-group>
+        </div>
       </card>
     </el-col>
   </el-row>

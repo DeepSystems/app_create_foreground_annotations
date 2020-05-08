@@ -27,6 +27,8 @@ MAX_NUMBER_OF_OBJECTS = "maxNumObjects"
 
 LOGS_OPENED = "logsOpened"
 PROGRESS = "progress"
+LOADING = "loading"
+
 
 STATE_DEFAULTS = {
     PROJECT_INDEX: 0,
@@ -41,7 +43,9 @@ STATE_DEFAULTS = {
     FG_SHAPE: FG_SHAPE_ANY,
     FG_COLOR: sly.color.rgb2hex([0, 255, 0]),
 
-    PROGRESS: 0,
+    PROGRESS: 55,
+
+    LOADING: False,
 
     LOGS_OPENED: [] #["logs"]
 }
