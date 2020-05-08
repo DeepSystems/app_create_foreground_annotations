@@ -24,12 +24,14 @@ def main():
         gui_template = file.read()
 
     data = {}
+    #@TODO: filter non-image project
     data["projects"] = utils.read_projects(api, workspace_id)
 
     table = []
     for i in range(40):
         table.append({"name": sly.rand_str(5), "my_value": i})
     data[const.TABLE] = table
+    data[const.PROGRESS] = 0
 
     # data["table"] = [ {"name": "12aaa3", "xvalue": 777}, {"name": "3bbb33", "xvalue": 999} ]
     # data["gallery"] = [
@@ -59,8 +61,7 @@ def main():
     payload = {}
     payload["template"] = gui_template
     payload[const.STATE] = const.STATE_DEFAULTS
-    payload["data"] = data
-
+    payload[const.DATA] = data
 
     #http://192.168.1.42/apps/sessions/54
     #"http://192.168.1.42/apps/2/sessions/54"

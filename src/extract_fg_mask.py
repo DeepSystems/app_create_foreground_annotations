@@ -4,9 +4,12 @@ import os
 import cv2
 import numpy as np
 import skimage
+import random
 import supervisely_lib as sly
 import constants as const
 
+#@TODO: for debug
+random.seed(7)
 
 # parser = argparse.ArgumentParser(description='Recalculate foreground label')
 # parser.add_argument('--image-id', action="store", type=int, required=True)
@@ -31,12 +34,49 @@ import constants as const
 #363
 
 
+def update_progress(api, task_id, percentage):
+    jresp = api.task.set_data(task_id, payload=int(percentage), field="{}.{}".format(const.DATA, const.PROGRESS))
+    print(jresp.json())
+    pass
+
+
 def extract_foreground():
     api = sly.Api.from_env()
     task_id = int(os.getenv("TASK_ID"))
 
     state = api.task.get_data(task_id, field=const.STATE)
-    print(state["areaThreshold"])
+
+    project = api.task.get_data(task_id, field="{}.projects[{}]".format(const.DATA, state["projectIndex"]))
+    project_id = project["id"]
+
+    # sample images
+    all_images = []
+    for dataset in api.dataset.get_list(project_id):
+        images = api.image.get_list(dataset.id)
+        image_dataset = [dataset] * len(images)
+        all_images.extend(zip(images, image_dataset))
+
+    # read sample count
+    if state[const.SAMPLE_FLAG]:
+        cnt_images = state[const.SAMPLE_COUNT]
+        assert cnt_images <= len(all_images)
+        random.shuffle(all_images)
+        all_images = all_images[:cnt_images]
+
+    sly.fs.mkdir(const.CACHE_DIR)
+    for idx, (image_info, dataset_info) in enumerate(all_images):
+        image_id = image_info.id
+        image_path = os.path.join(const.CACHE_DIR, "{}.png".format(image_id))
+        if not sly.fs.file_exists(image_path):
+            api.image.download_path(image_id, image_path, )
+        image = sly.image.read(image_path, remove_alpha_channel=False)
+
+        if image.shape[2] != 4:
+            sly.logger.critical("Image (id = {}) does not have alpha channel".format(image_id))
+
+        update_progress(api, task_id, (idx + 1) * 100 / len(all_images))
+
+
 
     # #state = api.ta
     #

@@ -157,7 +157,7 @@
     <el-col :span="16">
       <card title="Statistics" subtitle="Foreground stats per image" style="height:100%">
         <div slot="header" class="fflex">
-          <el-progress v-if="state.loading === true" style="width: 150px" :percentage="state.progress"></el-progress>
+          <el-progress v-if="state.loading === true" style="width: 150px" :percentage="data.progress"></el-progress>
           <el-button-group>
             <el-button size="small" :loading="state.loading" @click="state.loading = true; command('/workdir/scr/my_script.py')"><i class="zmdi zmdi-play"></i></el-button>
             <el-button size="small" @click="state.needStop = true; state.loading = false"><i class="zmdi zmdi-stop"></i></el-button>
@@ -170,6 +170,7 @@
 
   <!--=====================================  Debug state ===========================================================-->
   <card class="mt15" title="Debug state"><pre>{{state}}</pre></card>
+  <card class="mt15" title="Debug data"><pre>{{data.progress}}</pre></card>
   <!--=======================================   Logs   =============================================================-->
   <el-collapse class="mt15" v-model="state.logsOpened">
     <el-collapse-item title="Application logs" name="logs">

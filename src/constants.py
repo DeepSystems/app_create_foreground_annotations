@@ -15,6 +15,7 @@ FG_SHAPE_ANY = sly.AnyGeometry.geometry_name()
 FG_SHAPE_BITMAP = sly.Bitmap.geometry_name()
 
 #state fields
+DATA = "data"
 STATE = "state"
 PROJECT_INDEX = "projectIndex"
 
@@ -46,8 +47,6 @@ STATE_DEFAULTS = {
     FG_NAME: "fg",
     FG_SHAPE: FG_SHAPE_ANY,
     FG_COLOR: sly.color.rgb2hex([0, 255, 0]),
-
-    PROGRESS: 55,
 
     LOADING: False,
     NEED_STOP: False,
