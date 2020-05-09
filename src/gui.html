@@ -130,8 +130,8 @@
 
         <sly-field class="mt10" title="Foreground class" description="Define class shape, name and color">
           <div class="fflex">
-            <el-input class="mr5" v-model="state.fgName"></el-input>
-            <el-select class="mr5" style="width: 200px;" v-model="state.fgShape">
+            <el-input class="mr5" style="width: 30%;" v-model="state.fgName"></el-input>
+            <el-select class="mr5" v-model="state.fgShape">
               <el-option
                       v-for="item in data.fgShapes"
                       :key="item.value"
@@ -139,7 +139,7 @@
                       :value="item.value">
               </el-option>
             </el-select>
-            <el-color-picker style="width: 100px;" color-format="hex" v-model="state.fgColor"></el-color-picker>
+            <el-color-picker style="width: 70px;" color-format="hex" v-model="state.fgColor"></el-color-picker>
           </div>
         </sly-field>
 
