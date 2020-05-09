@@ -28,7 +28,7 @@ MAX_NUMBER_OF_OBJECTS = "maxNumObjects"
 
 LOGS_OPENED = "logsOpened"
 PROGRESS = "progress"
-LOADING = "loading"
+IS_RUNNING = "isRunning"
 NEED_STOP = "needStop"
 
 TABLE = "table"
@@ -48,12 +48,20 @@ STATE_DEFAULTS = {
     FG_SHAPE: FG_SHAPE_ANY,
     FG_COLOR: sly.color.rgb2hex([0, 255, 0]),
 
-    LOADING: False,
-    NEED_STOP: False,
+
 
     PER_PAGE: 10,
     PAGE_SIZES: [10, 15, 20, 50, 100, 250, 500],
 
-    LOGS_OPENED: [] #["logs"]
+    LOGS_OPENED: [], #["logs"]
+
+    IS_RUNNING: False,
+    NEED_STOP: False,
 }
 
+DATA_DEFAULTS = {
+    PROGRESS: -1
+}
+
+
+NOTIFY_EVERY = 1

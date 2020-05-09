@@ -157,11 +157,23 @@
     <el-col :span="16">
       <card title="Statistics" subtitle="Foreground stats per image" style="height:100%">
         <div slot="header" class="fflex">
-          <el-progress v-if="state.loading === true" style="width: 150px" :percentage="data.progress"></el-progress>
-          <el-button-group>
-            <el-button size="small" :loading="state.loading" @click="state.loading = true; command('/workdir/scr/my_script.py')"><i class="zmdi zmdi-play"></i></el-button>
-            <el-button size="small" @click="state.needStop = true; state.loading = false"><i class="zmdi zmdi-stop"></i></el-button>
-          </el-button-group>
+          <el-progress v-if="data.progress !== -1" style="width: 150px" :percentage="data.progress"></el-progress>
+
+          <el-button v-if="data.progress === -1"
+                     size="small"
+                     :loading="state.isRunning"
+                     @click="state.isRunning = true; state.needStop = false; command('/workdir/srс/my_script.py')">
+            <i class="zmdi zmdi-play"></i>
+          </el-button>
+
+          <el-button v-if="data.progress !== -1"
+                     size="small"
+                     :loading="state.needStop"
+                     @click="state.isRunning = false; state.needStop = true">
+            <i class="zmdi zmdi-stop"></i>
+          </el-button>
+          <!--loading="state.isRunning"-->
+
         </div>
         <sly-table :options="{ perPage: state.perPage, pageSizes: state.pageSizes }" :content="data.table"></sly-table>
       </card>
@@ -170,7 +182,7 @@
 
   <!--=====================================  Debug state ===========================================================-->
   <card class="mt15" title="Debug state"><pre>{{state}}</pre></card>
-  <card class="mt15" title="Debug data"><pre>{{data.progress}}</pre></card>
+  <card class="mt15" title="Debug data"><pre>{{ `progress: ${data.progress}, progress1: ${data.progress} `}}</pre></card>
   <!--=======================================   Logs   =============================================================-->
   <el-collapse class="mt15" v-model="state.logsOpened">
     <el-collapse-item title="Application logs" name="logs">

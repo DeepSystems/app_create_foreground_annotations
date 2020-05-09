@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import time
 import cv2
 import numpy as np
 import skimage
@@ -11,33 +12,9 @@ import constants as const
 #@TODO: for debug
 random.seed(7)
 
-# parser = argparse.ArgumentParser(description='Recalculate foreground label')
-# parser.add_argument('--image-id', action="store", type=int, required=True)
-# parser.add_argument('--state', action="store", type=json.loads, default={}, required=True)
-#
-# parser.add_argument('--fg-alpha-threshold', action="store", type=sly.color.validate_channel_value, default=250,
-#                     help="0 means fully transparent, 255  - no transparency."
-#                          "keep all pixels with transparency great or equal (>=)")
-#
-# parser.add_argument('--min-area-percent', action="store", type=sly._utils.validate_percent, default=5,
-#                     help="object will be removed if area is less than argument value (%)")
-#
-# parser.add_argument('--num-objects-per-image', action="store", type=int, default=1,
-#                     help="how many objects will be extracted from image (with maximum area)")
-#
-# parser.add_argument('--cache-dir', action="store", type=str, default="/sly_task_data/cache", required=False)
-# parser.add_argument('--vis-dir', action="store", type=str, default="/sly_task_data/vis", required=False)
-# parser.add_argument('--debug-vis', action="store_true", default=False, required=False)
-
-# example
-# --image-id 339 --state "{\"key\":\"val\"}" --debug-vis
-#363
-
 
 def update_progress(api, task_id, percentage):
-    jresp = api.task.set_data(task_id, payload=int(percentage), field="{}.{}".format(const.DATA, const.PROGRESS))
-    print(jresp.json())
-    pass
+    api.task.set_data(task_id, payload=int(percentage), field="{}.{}".format(const.DATA, const.PROGRESS))
 
 
 def extract_foreground():
@@ -74,7 +51,14 @@ def extract_foreground():
         if image.shape[2] != 4:
             sly.logger.critical("Image (id = {}) does not have alpha channel".format(image_id))
 
-        update_progress(api, task_id, (idx + 1) * 100 / len(all_images))
+        time.sleep(2)
+
+        if (idx % const.NOTIFY_EVERY == 0 and idx != 0) or idx == len(all_images) - 1:
+            update_progress(api, task_id, (idx + 1) * 100 / len(all_images))
+            need_stop = api.task.get_data(task_id, field="{}.{}".format(const.STATE, const.NEED_STOP))
+            if need_stop is True:
+                update_progress(api, task_id, -1)
+                exit(0)
 
 
 
