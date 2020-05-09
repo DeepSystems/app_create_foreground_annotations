@@ -24,6 +24,7 @@ def main():
         gui_template = file.read()
 
     #@TODO: filter non-image project
+    #@TODO: replace to id
     projects = utils.read_projects(api, workspace_id)
 
     table = []

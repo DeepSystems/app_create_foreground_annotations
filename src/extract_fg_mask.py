@@ -41,6 +41,12 @@ def extract_foreground():
     project = api.task.get_data(task_id, field="{}.projects[{}]".format(const.DATA, state[const.PROJECT_INDEX]))
     project_id = project["id"]
 
+    workspace_id = api.project.get_info_by_id(project_id).workspace_id
+    team_id = api.workspace.get_info_by_id(workspace_id).team_id
+
+    processed_items = []
+    api.task.set_data(task_id, payload=processed_items, field="{}.{}".format(const.DATA, const.TABLE))
+
     # sample images
     all_images = []
     for dataset in api.dataset.get_list(project_id):
@@ -55,9 +61,27 @@ def extract_foreground():
         random.shuffle(all_images)
         all_images = all_images[:cnt_images]
 
+    fg_class = sly.ObjClass(state[const.FG_NAME],
+                            GET_GEOMETRY_FROM_STR(state[const.FG_SHAPE]),
+                            color=sly.color.hex2rgb(state[const.FG_COLOR]))
+    st_class = sly.ObjClass(state[const.ST_NAME],
+                            GET_GEOMETRY_FROM_STR(state[const.ST_SHAPE]),
+                            color=sly.color.hex2rgb(state[const.ST_COLOR]))
+    meta = sly.ProjectMeta(obj_classes=sly.ObjClassCollection([fg_class, st_class]))
+    api.project.update_meta(project_id, sly.ProjectMeta().to_json())  # clear previous labels and classes
+    api.project.update_meta(project_id, meta.to_json())
+
     sly.fs.mkdir(const.CACHE_DIR)
     for idx, (image_info, dataset_info) in enumerate(all_images):
+        table_row = {}
+
         image_id = image_info.id
+        table_row['id'] = image_id
+
+        image_url = api.image.url(team_id, workspace_id, project_id, dataset_info.id, image_id)
+        table_row['name'] = '<a href="{0}" rel="noopener noreferrer" target="_blank">{1}</a>' \
+                            .format(image_url, image_info.name)
+
         image_path = os.path.join(const.CACHE_DIR, "{}.png".format(image_id))
         if not sly.fs.file_exists(image_path):
             api.image.download_path(image_id, image_path, )
@@ -78,18 +102,7 @@ def extract_foreground():
         cc_area = count_instances_area(mask_cleaned, num_cc)
         cc_area = cc_area[:state[const.MAX_NUMBER_OF_OBJECTS]]
 
-        fg_class = sly.ObjClass(state[const.FG_NAME],
-                                GET_GEOMETRY_FROM_STR(state[const.FG_SHAPE]),
-                                color=sly.color.hex2rgb(state[const.FG_COLOR]))
-
-        st_class = sly.ObjClass(state[const.ST_NAME],
-                                GET_GEOMETRY_FROM_STR(state[const.ST_SHAPE]),
-                                color=sly.color.hex2rgb(state[const.ST_COLOR]))
-
-
-        meta = sly.ProjectMeta(obj_classes=[fg_class, st_class])
-        api.project.update_meta(project_id, sly.ProjectMeta().to_json())  # clear previous labels and classes
-        api.project.update_meta(project_id, meta.to_json())
+        table_row['objects count'] = len(cc_area)
 
         labels = []
         sly.logger.debug("image_id = {}, number of extracted objects: {}".format(image_id, len(cc_area)))
@@ -99,9 +112,21 @@ def extract_foreground():
             label = sly.Label(geometry, fg_class)
             labels.append(label)
         ann = sly.Annotation(mask.shape[:2], labels=labels)
+
+        # print(json.dumps(ann.to_json()))
+        # render = np.zeros(ann.img_size + (3,), dtype=np.uint8)
+        # ann.draw(render)
+        # sly.image.write('/workdir/src/0.png', render)
+
         api.annotation.upload_ann(image_id, ann)
 
+
+
+        processed_items.append(table_row)
+
         if (idx % const.NOTIFY_EVERY == 0 and idx != 0) or idx == len(all_images) - 1:
+            api.task.set_data(task_id, payload=processed_items, field="{}.{}".format(const.DATA, const.TABLE), append=True)
+            processed_items = []
             update_progress(api, task_id, (idx + 1) * 100 / len(all_images))
             need_stop = api.task.get_data(task_id, field="{}.{}".format(const.STATE, const.NEED_STOP))
             if need_stop is True:
