@@ -11,9 +11,6 @@ FG_NAME = "fgName"
 FG_SHAPE = "fgShape"
 FG_COLOR = "fgColor"
 
-FG_SHAPE_ANY = sly.AnyGeometry.geometry_name()
-FG_SHAPE_BITMAP = sly.Bitmap.geometry_name()
-
 #state fields
 DATA = "data"
 STATE = "state"
@@ -45,7 +42,7 @@ STATE_DEFAULTS = {
     MAX_NUMBER_OF_OBJECTS: 1,
 
     FG_NAME: "fg",
-    FG_SHAPE: FG_SHAPE_ANY,
+    FG_SHAPE: sly.AnyGeometry.geometry_name(),
     FG_COLOR: sly.color.rgb2hex([0, 255, 0]),
 
 
@@ -59,8 +56,14 @@ STATE_DEFAULTS = {
     NEED_STOP: False,
 }
 
+
+FG_SHAPES = "fgShapes"
 DATA_DEFAULTS = {
-    PROGRESS: -1
+    PROGRESS: -1,
+    FG_SHAPES: [
+        {"name": "Any Shape", "value": sly.AnyGeometry.geometry_name()},
+        {"name": "Bitmap", "value": sly.Bitmap.geometry_name()},
+    ]
 }
 
 

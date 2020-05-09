@@ -128,6 +128,24 @@
 
         <hr class="mb15" style="height: 1px; color: #e0e0e0; background-color: #e0e0e0; border: none;"/>
 
+        <sly-field class="mt10" title="Foreground class" description="Define class shape, name and color">
+          <div class="fflex">
+            <el-input class="mr5" v-model="state.fgName"></el-input>
+            <el-select class="mr5" style="width: 200px;" v-model="state.fgShape">
+              <el-option
+                      v-for="item in data.fgShapes"
+                      :key="item.value"
+                      :label="item.name"
+                      :value="item.value">
+              </el-option>
+            </el-select>
+            <el-color-picker style="width: 100px;" color-format="hex" v-model="state.fgColor"></el-color-picker>
+          </div>
+        </sly-field>
+
+
+        <hr class="mb15" style="height: 1px; color: #e0e0e0; background-color: #e0e0e0; border: none;"/>
+
         <sly-field title="Alpha channel threshold" :description="`0 means fully transparent, 255  - no transparency. Keep all pixels with transparency >= ${state.alphaThreshold}`">
           <el-slider class="ml10"
             :min="0"
@@ -162,7 +180,7 @@
           <el-button v-if="data.progress === -1"
                      size="small"
                      :loading="state.isRunning"
-                     @click="state.isRunning = true; state.needStop = false; command('/workdir/srс/my_script.py')">
+                     @click="state.isRunning = true; state.needStop = false; command('/workdir/srс/extract_fg_mask.py')">
             <i class="zmdi zmdi-play"></i>
           </el-button>
 

@@ -34,16 +34,6 @@ def main():
     data["projects"] = projects
     data["taskId"] = task_id
     data[const.TABLE] = table
-    data["fgPossibleShapes"] = [
-        {
-          "name": "Any Shape",
-          "value": "any"
-        },
-        {
-          "name": "Bitmap",
-          "value": "bitmap"
-        }
-      ]
 
     payload = {}
     payload["template"] = gui_template
