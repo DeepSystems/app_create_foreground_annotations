@@ -118,6 +118,9 @@ def extract_foreground():
         gray_label = sly.Label(gray_geometry, st_class)
         labels.append(gray_label)
 
+        #@TODO: gray area, avg, min, max area for objects
+        #@TODO: debug fg mask
+
         ann = sly.Annotation(mask.shape[:2], labels=labels)
 
         # debug anotation
