@@ -49,15 +49,16 @@ def extract_foreground():
         image = sly.image.read(image_path, remove_alpha_channel=False)
 
         if image.shape[2] != 4:
-            sly.logger.critical("Image (id = {}) does not have alpha channel".format(image_id))
+            sly.logger.warning("Image (id = {}) is skipped: it does not have alpha channel".format(image_id))
+            continue
 
         time.sleep(2)
-
         if (idx % const.NOTIFY_EVERY == 0 and idx != 0) or idx == len(all_images) - 1:
             update_progress(api, task_id, (idx + 1) * 100 / len(all_images))
             need_stop = api.task.get_data(task_id, field="{}.{}".format(const.STATE, const.NEED_STOP))
             if need_stop is True:
                 update_progress(api, task_id, -1)
+                sly.logger.info("SCRIPT IS STOPPED")
                 exit(0)
 
 
