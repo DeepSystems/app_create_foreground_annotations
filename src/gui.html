@@ -46,6 +46,21 @@
           </div>
         </sly-field>
 
+        <sly-field class="mt10" title="Semi-transparent class (ST)" description="[FOR DEBUG] Class to visualize pixels with coarse alpha value">
+          <div class="fflex">
+            <el-input class="mr5" v-model="state.stName"></el-input>
+            <el-select class="mr5" v-model="state.stShape">
+              <el-option
+                      v-for="item in data.fgShapes"
+                      :key="item.value"
+                      :label="item.name"
+                      :value="item.value">
+              </el-option>
+            </el-select>
+            <el-color-picker style="width: 100px;" color-format="hex" v-model="state.stColor"></el-color-picker>
+          </div>
+        </sly-field>
+
 
         <hr class="mb15" style="height: 1px; color: #e0e0e0; background-color: #e0e0e0; border: none;"/>
 
@@ -80,12 +95,14 @@
         <div slot="header" class="fflex">
           <el-progress v-if="data.progress !== -1" style="width: 150px" :percentage="data.progress"></el-progress>
 
-          <el-button v-if="data.progress === -1"
-                     size="small"
-                     :loading="state.isRunning"
-                     @click="state.isRunning = true; state.needStop = false; command('/workdir/srс/extract_fg_mask.py')">
-            <i class="zmdi zmdi-play"></i>
-          </el-button>
+          <el-tooltip content="All labels will be removed from selected project" placement="top">
+            <el-button v-if="data.progress === -1"
+                       size="small"
+                       :loading="state.isRunning"
+                       @click="state.isRunning = true; state.needStop = false; command('/workdir/srс/extract_fg_mask.py')">
+              <i class="zmdi zmdi-play"></i>
+            </el-button>
+          </el-tooltip>
 
           <el-button v-if="data.progress !== -1"
                      size="small"

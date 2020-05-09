@@ -11,6 +11,10 @@ FG_NAME = "fgName"
 FG_SHAPE = "fgShape"
 FG_COLOR = "fgColor"
 
+ST_NAME = "stName"
+ST_SHAPE = "stShape"
+ST_COLOR = "stColor"
+
 #state fields
 DATA = "data"
 STATE = "state"
@@ -45,7 +49,9 @@ STATE_DEFAULTS = {
     FG_SHAPE: sly.AnyGeometry.geometry_name(),
     FG_COLOR: sly.color.rgb2hex([0, 255, 0]),
 
-
+    ST_NAME: "st",
+    ST_SHAPE: sly.AnyGeometry.geometry_name(),
+    ST_COLOR: sly.color.rgb2hex([128, 128, 128]),
 
     PER_PAGE: 10,
     PAGE_SIZES: [10, 15, 20, 50, 100, 250, 500],

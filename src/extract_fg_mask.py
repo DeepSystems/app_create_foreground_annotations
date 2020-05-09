@@ -8,6 +8,7 @@ import skimage
 import random
 import supervisely_lib as sly
 import constants as const
+from supervisely_lib.annotation.json_geometries_map import GET_GEOMETRY_FROM_STR
 
 #@TODO: for debug
 random.seed(7)
@@ -17,13 +18,27 @@ def update_progress(api, task_id, percentage):
     api.task.set_data(task_id, payload=int(percentage), field="{}.{}".format(const.DATA, const.PROGRESS))
 
 
+def count_instances_area(mask, cc_count):
+    _total_sum = 0
+    cc_area = []
+    for i in range(cc_count + 1):
+        area = np.count_nonzero(mask == i)
+        cc_area.append((i, area))
+        _total_sum += area
+    image_pixels_count = mask.shape[0] * mask.shape[1]
+    if _total_sum != image_pixels_count:
+        raise AssertionError("Some pixels are missed. Processed {} of {}".format(_total_sum, image_pixels_count))
+    cc_area = sorted(cc_area, key=lambda tup: tup[1])
+    return cc_area
+
+
 def extract_foreground():
     api = sly.Api.from_env()
     task_id = int(os.getenv("TASK_ID"))
 
     state = api.task.get_data(task_id, field=const.STATE)
 
-    project = api.task.get_data(task_id, field="{}.projects[{}]".format(const.DATA, state["projectIndex"]))
+    project = api.task.get_data(task_id, field="{}.projects[{}]".format(const.DATA, state[const.PROJECT_INDEX]))
     project_id = project["id"]
 
     # sample images
@@ -52,7 +67,40 @@ def extract_foreground():
             sly.logger.warning("Image (id = {}) is skipped: it does not have alpha channel".format(image_id))
             continue
 
-        time.sleep(2)
+        alpha = image[:, :, 3]
+        mask = (alpha >= state[const.ALPHA_THRESHOLD]).astype(np.uint8) * 255
+        mask_instances, num_cc = skimage.measure.label(mask, background=0, return_num=True)
+        area_pixels = int(mask_instances.shape[0] * mask_instances.shape[1] / 100 * state[const.AREA_THRESHOLD])
+        mask_cleaned = skimage.morphology.remove_small_objects(mask_instances, area_pixels)
+        mask_cleaned, num_cc = skimage.measure.label(mask_cleaned, background=0, return_num=True)
+
+
+        cc_area = count_instances_area(mask_cleaned, num_cc)
+        cc_area = cc_area[:state[const.MAX_NUMBER_OF_OBJECTS]]
+
+        fg_class = sly.ObjClass(state[const.FG_NAME],
+                                GET_GEOMETRY_FROM_STR(state[const.FG_SHAPE]),
+                                color=sly.color.hex2rgb(state[const.FG_COLOR]))
+
+        st_class = sly.ObjClass(state[const.ST_NAME],
+                                GET_GEOMETRY_FROM_STR(state[const.ST_SHAPE]),
+                                color=sly.color.hex2rgb(state[const.ST_COLOR]))
+
+
+        meta = sly.ProjectMeta(obj_classes=[fg_class, st_class])
+        api.project.update_meta(project_id, sly.ProjectMeta().to_json())  # clear previous labels and classes
+        api.project.update_meta(project_id, meta.to_json())
+
+        labels = []
+        sly.logger.debug("image_id = {}, number of extracted objects: {}".format(image_id, len(cc_area)))
+        for idx, (cc_color, area) in enumerate(cc_area):
+            object_mask = (mask_cleaned == cc_color)
+            geometry = sly.Bitmap(data=object_mask)
+            label = sly.Label(geometry, fg_class)
+            labels.append(label)
+        ann = sly.Annotation(mask.shape[:2], labels=labels)
+        api.annotation.upload_ann(image_id, ann)
+
         if (idx % const.NOTIFY_EVERY == 0 and idx != 0) or idx == len(all_images) - 1:
             update_progress(api, task_id, (idx + 1) * 100 / len(all_images))
             need_stop = api.task.get_data(task_id, field="{}.{}".format(const.STATE, const.NEED_STOP))
