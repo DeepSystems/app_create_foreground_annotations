@@ -106,21 +106,27 @@ def extract_foreground():
 
         labels = []
         sly.logger.debug("image_id = {}, number of extracted objects: {}".format(image_id, len(cc_area)))
-        for idx, (cc_color, area) in enumerate(cc_area):
+        for cc_color, area in cc_area:
             object_mask = (mask_cleaned == cc_color)
             geometry = sly.Bitmap(data=object_mask)
             label = sly.Label(geometry, fg_class)
             labels.append(label)
+
+        #find gray zone
+        gray_zone = np.logical_and(alpha != 0, alpha != 255)
+        gray_geometry = sly.Bitmap(data=gray_zone)
+        gray_label = sly.Label(gray_geometry, st_class)
+        labels.append(gray_label)
+
         ann = sly.Annotation(mask.shape[:2], labels=labels)
 
+        # debug anotation
         # print(json.dumps(ann.to_json()))
         # render = np.zeros(ann.img_size + (3,), dtype=np.uint8)
         # ann.draw(render)
         # sly.image.write('/workdir/src/0.png', render)
 
         api.annotation.upload_ann(image_id, ann)
-
-
 
         processed_items.append(table_row)
 
