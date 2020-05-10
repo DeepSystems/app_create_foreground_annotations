@@ -1,6 +1,7 @@
 import supervisely_lib as sly
 
 CACHE_DIR = "/sly_task_data/cache"
+DEBUG_VIS_DIR = "/sly_task_data/vis"
 STATE_PATH = sly.TaskPaths.APP_STATE_PATH
 
 
