@@ -110,25 +110,6 @@
             <i v-if="!state.needStop" class="zmdi zmdi-stop"></i><span v-else>Stopping...</span>
           </el-button>
 
-          <!--<el-progress v-if="state.isRunning" style="width: 150px" :percentage="data.progress"></el-progress>-->
-
-          <!--<el-tooltip content="All labels will be removed from the selected project" placement="top">-->
-            <!--<el-button v-if="!state.isRunning"-->
-                       <!--size="small"-->
-                       <!--:loading="state.runClicked"-->
-                       <!--@click="state.isRunning = true; state.runClicked = true; command('/workdir/srс/extract_fg_mask.py')">-->
-              <!--<i class="zmdi zmdi-play"></i>-->
-            <!--</el-button>-->
-          <!--</el-tooltip>-->
-
-          <!--<el-button v-if="data.progress !== -1"-->
-                     <!--size="small"-->
-                     <!--:loading="state.needStop"-->
-                     <!--@click="state.stopClicked = true;">-->
-            <!--<i class="zmdi zmdi-stop"></i>-->
-          <!--</el-button>-->
-          <!--loading="state.isRunning"-->
-
         </div>
         <sly-table :options="{ perPage: state.perPage, pageSizes: state.pageSizes }" :content="data.table"></sly-table>
       </card>

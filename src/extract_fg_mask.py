@@ -9,6 +9,7 @@ import random
 import supervisely_lib as sly
 import constants as const
 from supervisely_lib.annotation.json_geometries_map import GET_GEOMETRY_FROM_STR
+import math
 
 #@TODO: for debug
 random.seed(7)
@@ -16,6 +17,9 @@ random.seed(7)
 
 DEBUG = True
 
+#@TODO: учитывать дырки в объекте
+#@TODO: выкидывать там, где много серой зоны по площади ли по количеству
+#@TODO: по компонентам связности крестик, без диагональных пикселей
 
 def update_progress(api, task_id, percentage):
     api.task.set_data(task_id, payload=int(percentage), field="{}.{}".format(const.DATA, const.PROGRESS))
@@ -51,16 +55,20 @@ def set_project_meta(api, project_id, state):
     return fg_class, st_class
 
 
+def reset_buttons_and_progress(api, task_id):
+    update_progress(api, task_id, 0)
+    api.task.set_data(task_id, payload={const.RUN_CLICKED: False, const.STOP_CLICKED: False}, field=const.STATE, append=True)
+
+
 def extract_foreground():
+    api = sly.Api.from_env()
+    task_id = int(os.getenv("TASK_ID"))
+
     try:
         if DEBUG:
             sly.fs.mkdir(const.DEBUG_VIS_DIR)
             sly.fs.clean_dir(const.DEBUG_VIS_DIR)
 
-        api = sly.Api.from_env()
-        task_id = int(os.getenv("TASK_ID"))
-
-        #@TODO: set progress to 0
         state = api.task.get_data(task_id, field=const.STATE)
 
         project = api.task.get_data(task_id, field="{}.projects[{}]".format(const.DATA, state[const.PROJECT_INDEX]))
@@ -111,7 +119,6 @@ def extract_foreground():
             if image.shape[2] != 4:
                 sly.logger.warning("Image (id = {}) is skipped: it does not have alpha channel".format(image_id))
                 continue
-
             if DEBUG:
                 sly.image.write(os.path.join(debug_img_dir, '000_image.png'), image, remove_alpha_channel=False)
 
@@ -129,6 +136,7 @@ def extract_foreground():
             if DEBUG:
                 vis = skimage.color.label2rgb(mask_instances, bg_label=0)
                 sly.image.write(os.path.join(debug_img_dir, '003_mask_cc.png'), vis * 255)
+            table_row['total objects'] = num_cc
 
             # remove small objects
             area_pixels = int(mask_instances.shape[0] * mask_instances.shape[1] / 100 * state[const.AREA_THRESHOLD])
@@ -139,12 +147,9 @@ def extract_foreground():
                 sly.image.write(os.path.join(debug_img_dir, '004_mask_cleaned.png'), vis * 255)
 
             cc_area = count_instances_area(mask_cleaned, num_cc)
-            # @TODO: skip empty image
-            #if len(cc_area) == 0:
-            #    sly.logger.warn("Image (id={}) is skipped ")
             cc_area = cc_area[:state[const.MAX_NUMBER_OF_OBJECTS]]
 
-            table_row['objects count'] = len(cc_area)
+            table_row['final objects'] = len(cc_area)
 
             labels = []
             sly.logger.debug("image_id = {}, number of extracted objects: {}".format(image_id, len(cc_area)))
@@ -156,12 +161,13 @@ def extract_foreground():
 
             #find gray zone
             gray_zone = np.logical_and(alpha != 0, alpha != 255)
-            gray_geometry = sly.Bitmap(data=gray_zone)
-            gray_label = sly.Label(gray_geometry, st_class)
-            labels.append(gray_label)
+            if np.sum(gray_zone) != 0:
+                #gray_zone is not empty
+                gray_geometry = sly.Bitmap(data=gray_zone)
+                gray_label = sly.Label(gray_geometry, st_class)
+                labels.append(gray_label)
 
-            #@TODO: gray area, avg, min, max area for objects
-            #@TODO: debug fg mask
+            table_row['gray area (%)'] = round(np.sum(gray_zone) * 100 / (gray_zone.shape[0] * gray_zone.shape[1]), 2)
 
             ann = sly.Annotation(mask.shape[:2], labels=labels)
 
@@ -173,15 +179,14 @@ def extract_foreground():
             api.annotation.upload_ann(image_id, ann)
             processed_items.append(table_row)
 
-            time.sleep(2)
+            #time.sleep(2)
             if (idx % const.NOTIFY_EVERY == 0 and idx != 0) or idx == len(all_images) - 1:
                 api.task.set_data(task_id, payload=processed_items, field="{}.{}".format(const.DATA, const.TABLE), append=True)
                 processed_items = []
                 update_progress(api, task_id, (idx + 1) * 100 / len(all_images))
                 need_stop = api.task.get_data(task_id, field="{}.{}".format(const.STATE, const.STOP_CLICKED))
                 if need_stop is True:
-                    update_progress(api, task_id, 0)
-                    api.task.set_data(task_id, payload={const.RUN_CLICKED: False, const.STOP_CLICKED: False}, field=const.STATE, append=True)
+                    reset_buttons_and_progress(api, task_id)
                     sly.logger.info("SCRIPT IS STOPPED")
                     exit(0)
     except Exception as e:
@@ -193,7 +198,7 @@ def extract_foreground():
     else:
         sly.logger.debug('Script finished: OK')
     finally:
-        #@TODO: sed data via api
+        reset_buttons_and_progress(api, task_id)
         pass
 
 
