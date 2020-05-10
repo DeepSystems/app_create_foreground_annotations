@@ -90,26 +90,43 @@
 
       </card>
     </el-col>
+    <!--======================================= Buttons =============================================================-->
     <el-col :span="16">
       <card title="Statistics" subtitle="Foreground stats per image" style="height:100%">
         <div slot="header" class="fflex">
-          <el-progress v-if="data.progress !== -1" style="width: 150px" :percentage="data.progress"></el-progress>
-
-          <el-tooltip content="All labels will be removed from selected project" placement="top">
-            <el-button v-if="data.progress === -1"
+          <el-progress v-if="state.runClicked" style="width: 150px" :percentage="data.progress"></el-progress>
+          <el-tooltip content="Warning: all labels will be removed from the selected project" placement="top">
+            <el-button v-if="!state.needStop"
                        size="small"
-                       :loading="state.isRunning"
-                       @click="state.isRunning = true; state.needStop = false; command('/workdir/srс/extract_fg_mask.py')">
-              <i class="zmdi zmdi-play"></i>
+                       :loading="state.runClicked"
+                       @click="state.runClicked = true; command('/workdir/srс/extract_fg_mask.py')">
+              <i v-if="!state.runClicked" class="zmdi zmdi-play"></i><span v-else>Running...</span>
             </el-button>
           </el-tooltip>
-
-          <el-button v-if="data.progress !== -1"
+          <el-button v-if="state.runClicked"
                      size="small"
-                     :loading="state.needStop"
-                     @click="state.isRunning = false; state.needStop = true">
-            <i class="zmdi zmdi-stop"></i>
+                     :loading="state.stopClicked"
+                     @click="state.stopClicked = true">
+            <i v-if="!state.needStop" class="zmdi zmdi-stop"></i><span v-else>Stopping...</span>
           </el-button>
+
+          <!--<el-progress v-if="state.isRunning" style="width: 150px" :percentage="data.progress"></el-progress>-->
+
+          <!--<el-tooltip content="All labels will be removed from the selected project" placement="top">-->
+            <!--<el-button v-if="!state.isRunning"-->
+                       <!--size="small"-->
+                       <!--:loading="state.runClicked"-->
+                       <!--@click="state.isRunning = true; state.runClicked = true; command('/workdir/srс/extract_fg_mask.py')">-->
+              <!--<i class="zmdi zmdi-play"></i>-->
+            <!--</el-button>-->
+          <!--</el-tooltip>-->
+
+          <!--<el-button v-if="data.progress !== -1"-->
+                     <!--size="small"-->
+                     <!--:loading="state.needStop"-->
+                     <!--@click="state.stopClicked = true;">-->
+            <!--<i class="zmdi zmdi-stop"></i>-->
+          <!--</el-button>-->
           <!--loading="state.isRunning"-->
 
         </div>

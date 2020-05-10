@@ -30,8 +30,10 @@ MAX_NUMBER_OF_OBJECTS = "maxNumObjects"
 
 LOGS_OPENED = "logsOpened"
 PROGRESS = "progress"
-IS_RUNNING = "isRunning"
-NEED_STOP = "needStop"
+
+RUN_CLICKED = "runClicked"
+STOP_CLICKED = "stopClicked"
+
 
 TABLE = "table"
 PER_PAGE = "perPage"
@@ -59,14 +61,14 @@ STATE_DEFAULTS = {
 
     LOGS_OPENED: [], #["logs"]
 
-    IS_RUNNING: False,
-    NEED_STOP: False,
+    RUN_CLICKED: False,
+    STOP_CLICKED: False
 }
 
 
 FG_SHAPES = "fgShapes"
 DATA_DEFAULTS = {
-    PROGRESS: -1,
+    PROGRESS: 0,
     FG_SHAPES: [
         {"name": "Any Shape", "value": sly.AnyGeometry.geometry_name()},
         {"name": "Bitmap", "value": sly.Bitmap.geometry_name()},
