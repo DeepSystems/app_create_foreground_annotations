@@ -1,7 +1,7 @@
 import os
 import json
 import html
-
+import time
 import supervisely_lib as sly
 import constants as const
 import utils
@@ -47,7 +47,9 @@ def main():
 
     sly.logger.info("APP_STARTED")
 
-    pass
+    while True:
+        time.sleep(5)
+        
 
 if __name__ == "__main__":
     main()
