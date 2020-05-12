@@ -8,8 +8,6 @@ import utils
 
 
 def main():
-    sly.logger.info("APPLICATION_STARTED")
-
     task_id = int(os.getenv("TASK_ID"))
     api = sly.Api.from_env()
     api.add_additional_field('taskId', task_id)
@@ -20,7 +18,7 @@ def main():
     workspace_id = task_context["workspace"]["id"]
 
     gui_template = ""
-    with open('gui.html', 'r') as file:
+    with open('/workdir/src/gui.html', 'r') as file:
         gui_template = file.read()
 
     #@TODO: filter non-image project
@@ -46,6 +44,8 @@ def main():
     #http://192.168.1.42/apps/sessions/54
     #"http://192.168.1.42/apps/2/sessions/54"
     jresp = api.task.set_data(task_id, payload)
+
+    sly.logger.info("APP_STARTED")
 
     pass
 
