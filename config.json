@@ -1,5 +1,6 @@
 {
 	"name": "Extract Foreground Objects",
 	"description": "Find foreground objects on the images with alpha channels",
+	"init_script": "src/main.py",
 	"docker_image": "docker.deepsystems.io/supervisely/five/python-runner:import_alpha_images"
 }
